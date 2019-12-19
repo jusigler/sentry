@@ -43,24 +43,6 @@ describe('ContextPickerModal', function() {
     expect(wrapper.find('StyledSelectControl[name="project"]').exists()).toBe(false);
   });
 
-  it('fetches org details and sets as active org if there is only one org', function() {
-    const spy = jest.spyOn(OrgActions, 'fetchOrganizationDetails');
-    const api = MockApiClient.addMockResponse({
-      url: `/organizations/${org2.slug}/`,
-    });
-    const wrapper = mountWithTheme(
-      getComponent({organizations: [org2]}),
-      TestStubs.routerContext()
-    );
-
-    wrapper.update();
-    expect(spy).toHaveBeenCalledWith('org2', {
-      setActive: true,
-      loadProjects: true,
-    });
-    expect(api).toHaveBeenCalled();
-  });
-
   it('calls onFinish after latestContext is set, if project id is not needed, and only 1 org', function() {
     const spy = jest.spyOn(OrgActions, 'fetchOrganizationDetails');
     const api = MockApiClient.addMockResponse({
