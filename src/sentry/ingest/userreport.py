@@ -7,6 +7,7 @@ from django.utils import timezone
 from sentry import eventstore
 from sentry.models import EventUser, UserReport
 from sentry.signals import user_feedback_received
+from sentry.tasks.update_user_reports import update_user_report
 
 
 class Conflict(Exception):
@@ -78,6 +79,9 @@ def save_userreport(project, report, start_time=None):
     user_feedback_received.send(
         project=report_instance.project, group=report_instance.group, sender=save_userreport
     )
+
+    if not event:
+        update_user_report.apply_async(kwargs={"user_report": report_instance})
 
     return report_instance
 
